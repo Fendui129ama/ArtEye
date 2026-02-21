@@ -763,3 +763,32 @@
         const allowlist = document.getElementById('phase-allowlist').value === '1';
         const merkle = document.getElementById('phase-merkle').value.trim();
         if (!contract || !signer) { showAddPhaseMsg('Connect wallet and attach contract.', 'err'); return; }
+        if (!dropId || !start || !end) { showAddPhaseMsg('Fill drop ID, start block, end block.', 'err'); return; }
+        const merkleRoot = (allowlist && merkle) ? (ethers.isHexString(merkle) && merkle.length === 66 ? merkle : ethers.zeroPadValue(ethers.keccak256(ethers.toUtf8Bytes(merkle)), 32)) : '0x' + '0'.repeat(64);
+        try {
+          const tx = await contract.addPhase(dropId, start, end, allowlist, merkleRoot);
+          showAddPhaseMsg('Tx sent: ' + tx.hash, 'info');
+          await tx.wait();
+          showAddPhaseMsg('Phase added.', 'ok');
+        } catch (e) {
+          showAddPhaseMsg(e.message || 'Add phase failed.', 'err');
+        }
+      });
+
+      document.getElementById('btn-withdraw-creator').addEventListener('click', async function() {
+        const dropId = document.getElementById('withdraw-drop-id').value.trim();
+        if (!contract || !signer) { showWithdrawMsg('Connect wallet and attach contract.', 'err'); return; }
+        if (!dropId) { showWithdrawMsg('Enter drop ID.', 'err'); return; }
+        try {
+          const tx = await contract.withdrawCreatorProceeds(dropId);
+          showWithdrawMsg('Tx sent: ' + tx.hash, 'info');
+          await tx.wait();
+          showWithdrawMsg('Proceeds withdrawn.', 'ok');
+        } catch (e) {
+          showWithdrawMsg(e.message || 'Withdraw failed.', 'err');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
