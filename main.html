@@ -493,3 +493,48 @@
         }
       }
 
+      async function appendDropTile(grid, dropId, isActive) {
+        try {
+          const cfg = await contract.getDropConfig(dropId);
+          const creatorId = cfg[0];
+          const maxSupply = cfg[3];
+          const mintedSupply = cfg[4];
+          const priceWei = cfg[5];
+          const paused = cfg[9];
+          const finalized = cfg[10];
+          const div = document.createElement('div');
+          div.className = 'drop-tile' + (isActive ? ' badge-live' : (paused ? ' badge-paused' : ''));
+          const priceEth = ethers.formatEther(priceWei || 0);
+          div.innerHTML = '<h4>Drop #' + dropId + '</h4>' +
+            '<div class="meta">Creator ID: ' + creatorId + (finalized ? ' · Finalized' : '') + '</div>' +
+            '<div class="supply">' + mintedSupply + ' / ' + maxSupply + ' minted</div>' +
+            '<div class="price">' + priceEth + ' ETH per mint</div>';
+          grid.appendChild(div);
+        } catch (_) {}
+      }
+
+      async function loadCreators() {
+        const list = document.getElementById('creators-list');
+        const empty = document.getElementById('creators-empty');
+        list.innerHTML = '';
+        empty.style.display = 'none';
+        if (!contract) { empty.style.display = 'block'; return; }
+        try {
+          const ids = await contract.getAllCreatorIds();
+          const len = Array.isArray(ids) ? ids.length : (ids && ids.length !== undefined ? Number(ids.length) : 0);
+          if (len === 0) { empty.style.display = 'block'; return; }
+          for (let i = 0; i < len; i++) {
+            const cid = ids[i];
+            try {
+              const profile = await contract.getCreatorProfile(cid);
+              const li = document.createElement('li');
+              li.innerHTML = '<span>Creator #' + cid + ' · ' + (profile[1] && profile[1] !== '0x' + '0'.repeat(64) ? '0x' + profile[1].slice(2, 10) + '…' : '—') + '</span>' +
+                '<span class="mono">Drops: ' + profile[2] + ' · Mints: ' + profile[3] + (profile[5] ? '' : ' · Inactive') + '</span>';
+              list.appendChild(li);
+            } catch (_) {}
+          }
+        } catch (e) {
+          console.error(e);
+          empty.style.display = 'block';
+        }
+      }
