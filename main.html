@@ -718,3 +718,48 @@
           loadStats();
           loadCreators();
         } catch (e) {
+          showOnboardMsg(e.message || 'Onboard failed.', 'err');
+        }
+      });
+
+      document.getElementById('btn-schedule-drop').addEventListener('click', async function() {
+        const contentHash = document.getElementById('drop-content-hash').value.trim();
+        const maxSupply = document.getElementById('drop-max-supply').value.trim();
+        const priceInput = document.getElementById('drop-price').value.trim();
+        const feeBps = document.getElementById('drop-fee-bps').value.trim() || '500';
+        const maxPerWallet = document.getElementById('drop-max-per-wallet').value.trim() || '0';
+        if (!contract || !signer) { showScheduleMsg('Connect wallet and attach contract.', 'err'); return; }
+        if (!contentHash || !maxSupply || !priceInput) { showScheduleMsg('Fill content hash, max supply, and price.', 'err'); return; }
+        try {
+          let priceWei;
+          if (priceInput.includes('.') || /^\d+$/.test(priceInput)) priceWei = ethers.parseEther(priceInput).toString();
+          else priceWei = BigInt(priceInput).toString();
+          const contentHashBytes = ethers.isHexString(contentHash) && contentHash.length === 66 ? contentHash : ethers.keccak256(ethers.toUtf8Bytes(contentHash));
+          const tx = await contract.scheduleDrop(contentHashBytes, maxSupply, priceWei, feeBps, maxPerWallet);
+          showScheduleMsg('Tx sent: ' + tx.hash, 'info');
+          const rec = await tx.wait();
+          const iface = new ethers.Interface(ABI);
+          let dropId = null;
+          if (rec && rec.logs) {
+            for (const log of rec.logs) {
+              try {
+                const parsed = iface.parseLog({ topics: log.topics, data: log.data });
+                if (parsed && parsed.name === 'DropScheduled') dropId = parsed.args[0];
+              } catch (_) {}
+            }
+          }
+          showScheduleMsg('Drop scheduled.' + (dropId !== undefined && dropId !== null ? ' Drop ID: ' + dropId : ''), 'ok');
+          loadStats();
+          loadDrops();
+        } catch (e) {
+          showScheduleMsg(e.message || 'Schedule failed.', 'err');
+        }
+      });
+
+      document.getElementById('btn-add-phase').addEventListener('click', async function() {
+        const dropId = document.getElementById('phase-drop-id').value.trim();
+        const start = document.getElementById('phase-start').value.trim();
+        const end = document.getElementById('phase-end').value.trim();
+        const allowlist = document.getElementById('phase-allowlist').value === '1';
+        const merkle = document.getElementById('phase-merkle').value.trim();
+        if (!contract || !signer) { showAddPhaseMsg('Connect wallet and attach contract.', 'err'); return; }
