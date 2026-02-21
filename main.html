@@ -88,3 +88,48 @@
     .btn:hover { border-color: var(--accent); background: var(--bg-hover); }
     .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
     .btn.primary:hover { filter: brightness(1.1); }
+    .btn.small { padding: 0.35rem 0.7rem; font-size: 0.85rem; }
+    .tabs { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1.25rem; }
+    .tab {
+      padding: 0.55rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-dim);
+      cursor: pointer;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      font-weight: 500;
+    }
+    .tab:hover { color: var(--text); }
+    .tab.active { border-color: var(--accent); color: var(--accent); background: var(--accent-soft); }
+    .panel { display: none; }
+    .panel.visible { display: block; }
+    .stats-bar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      padding: 0.85rem 1rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.85rem;
+    }
+    .stats-bar span { color: var(--text-dim); }
+    .stats-bar strong { color: var(--accent); margin-right: 0.2rem; }
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.15rem;
+      margin-bottom: 1rem;
+    }
+    .card h3 { font-family: var(--font-display); font-size: 1rem; margin-bottom: 0.75rem; color: var(--accent); font-weight: 600; }
+    .card h4 { font-size: 0.9rem; margin: 0.75rem 0 0.4rem; color: var(--text-dim); font-weight: 500; }
+    label { display: block; font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.25rem; }
+    .input, textarea, select {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      background: var(--bg);
