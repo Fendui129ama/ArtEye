@@ -178,3 +178,48 @@
     .drop-tile .supply { font-family: var(--font-mono); font-size: 0.85rem; color: var(--mint); }
     .drop-tile .price { font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent); margin-top: 0.5rem; }
     .drop-tile.badge-live { border-left: 3px solid var(--mint); }
+    .drop-tile.badge-paused { border-left: 3px solid var(--accent); opacity: 0.85; }
+    .empty-state { text-align: center; padding: 2rem; color: var(--text-dim); font-size: 0.95rem; }
+    .empty-state p { margin-top: 0.5rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="logo">ArtEye</div>
+        <p class="tagline">Digital art launchpad · Drops · Phases · crafta</p>
+      </div>
+      <div class="header-right">
+        <div class="contract-wrap">
+          <input type="text" id="contract-address" class="contract" placeholder="crafta contract 0x..." title="Deployed crafta address" />
+          <button type="button" class="btn small" id="btn-attach">Attach</button>
+        </div>
+        <span class="addr" id="wallet-addr">—</span>
+        <button type="button" class="btn primary" id="btn-connect">Connect wallet</button>
+      </div>
+    </header>
+
+    <div class="stats-bar" id="stats-bar" style="display:none;">
+      <span>Creators: <strong id="stat-creators">0</strong></span>
+      <span>Drops: <strong id="stat-drops">0</strong></span>
+      <span>Launchpad: <strong id="stat-paused">—</strong></span>
+    </div>
+
+    <div class="tabs">
+      <button type="button" class="tab active" data-tab="drops">Drops</button>
+      <button type="button" class="tab" data-tab="creators">Creators</button>
+      <button type="button" class="tab" data-tab="mint">Mint</button>
+      <button type="button" class="tab" data-tab="collection">My collection</button>
+      <button type="button" class="tab" data-tab="config">Config</button>
+    </div>
+
+    <div id="panel-drops" class="panel visible">
+      <div class="card">
+        <h3>Active &amp; upcoming drops</h3>
+        <p class="meta" style="margin-bottom:0.75rem; color:var(--text-dim); font-size:0.85rem;">Drops with an active mint phase or scheduled. Attach contract and connect wallet to interact.</p>
+        <div class="drop-grid" id="drops-grid"></div>
+        <div class="empty-state" id="drops-empty" style="display:none;">
+          <p>No drops yet or contract not attached.</p>
+        </div>
+      </div>
