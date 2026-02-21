@@ -583,3 +583,48 @@
 
       async function doMint() {
         hideMsg('mint-msg');
+        const dropId = document.getElementById('mint-drop-id').value.trim();
+        const phase = document.getElementById('mint-phase').value.trim() || '0';
+        const qty = document.getElementById('mint-qty').value.trim() || '1';
+        const proofRaw = document.getElementById('mint-proof').value.trim();
+        if (!contract || !signer || !dropId) { showMsg('mint-msg', 'Connect wallet, attach contract, and set drop ID.', 'err'); return; }
+        let proof = [];
+        if (proofRaw) {
+          proof = proofRaw.split(',').map(function(s) { return s.trim(); }).filter(Boolean);
+        }
+        try {
+          const cost = await contract.estimateMintCost(dropId, qty);
+          const tx = await contract.mint(dropId, phase, qty, proof, { value: cost });
+          showMsg('mint-msg', 'Tx sent: ' + tx.hash + '. Waiting for confirmation…', 'info');
+          await tx.wait();
+          showMsg('mint-msg', 'Mint confirmed.', 'ok');
+          loadDropDetail();
+          loadCollection();
+          loadStats();
+        } catch (e) {
+          console.error(e);
+          showMsg('mint-msg', e.message || 'Mint failed.', 'err');
+        }
+      }
+
+      async function checkMint() {
+        hideMsg('mint-msg');
+        const dropId = document.getElementById('mint-drop-id').value.trim();
+        const phase = document.getElementById('mint-phase').value.trim() || '0';
+        const qty = document.getElementById('mint-qty').value.trim() || '1';
+        if (!contract || !signer) { showMsg('mint-msg', 'Connect wallet and attach contract.', 'err'); return; }
+        try {
+          const addr = await signer.getAddress();
+          const [ok, reason] = await contract.canMint(dropId, phase, addr, qty);
+          if (ok) showMsg('mint-msg', 'You can mint.', 'ok');
+          else showMsg('mint-msg', 'Cannot mint. Reason code: ' + reason + ' (e.g. 6=not started, 7=ended, 8=supply, 9=wallet cap, 12=allowlist required).', 'err');
+        } catch (e) {
+          showMsg('mint-msg', e.message || 'Check failed.', 'err');
+        }
+      }
+
+      async function loadConfig() {
+        const out = document.getElementById('config-detail');
+        if (!contract) { out.textContent = 'Attach contract first.'; return; }
+        try {
+          const [treasury, feeRecipient, keeper, deployedBlock] = await Promise.all([
