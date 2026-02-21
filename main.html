@@ -43,3 +43,48 @@
       padding-bottom: 1.25rem;
       border-bottom: 1px solid var(--border);
       margin-bottom: 1.25rem;
+    }
+    .logo {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 1.65rem;
+      letter-spacing: 0.02em;
+      color: var(--accent);
+    }
+    .tagline { font-size: 0.8rem; color: var(--text-dim); margin-top: 0.15rem; }
+    .header-right { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+    .contract-wrap { display: flex; align-items: center; gap: 0.5rem; }
+    input.contract {
+      width: 240px;
+      padding: 0.45rem 0.65rem;
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius);
+    }
+    input.contract:focus { outline: none; border-color: var(--accent); }
+    .addr {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--mint);
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .btn {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text);
+      cursor: pointer;
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .btn:hover { border-color: var(--accent); background: var(--bg-hover); }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn.primary:hover { filter: brightness(1.1); }
