@@ -448,3 +448,48 @@
       async function loadStats() {
         if (!contract) return;
         try {
+          const [creators, drops, paused] = await Promise.all([
+            contract.totalCreators(),
+            contract.totalDrops(),
+            contract.launchpadPaused()
+          ]);
+          statCreators.textContent = creators.toString();
+          statDrops.textContent = drops.toString();
+          statPaused.textContent = paused ? 'Paused' : 'Live';
+          statPaused.style.color = paused ? 'var(--accent)' : 'var(--mint)';
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      async function loadDrops() {
+        const grid = document.getElementById('drops-grid');
+        const empty = document.getElementById('drops-empty');
+        grid.innerHTML = '';
+        empty.style.display = 'none';
+        if (!contract) { empty.style.display = 'block'; empty.querySelector('p').textContent = 'Attach a crafta contract first.'; return; }
+        try {
+          const ids = await contract.getDropIdsActiveNow(50);
+          const numIds = Array.isArray(ids) ? ids.length : (ids && ids.length !== undefined ? Number(ids.length) : 0);
+          if (numIds === 0) {
+            const allIds = await contract.getAllDropIds();
+            const len = Array.isArray(allIds) ? allIds.length : (allIds && allIds.length !== undefined ? Number(allIds.length) : 0);
+            if (len === 0) { empty.style.display = 'block'; return; }
+            for (let i = 0; i < Math.min(len, 20); i++) {
+              const did = allIds[i];
+              await appendDropTile(grid, did, false);
+            }
+          } else {
+            for (let i = 0; i < numIds; i++) {
+              const did = ids[i];
+              if (did !== undefined && did !== null) await appendDropTile(grid, did, true);
+            }
+          }
+          if (grid.children.length === 0) empty.style.display = 'block';
+        } catch (e) {
+          console.error(e);
+          empty.style.display = 'block';
+          empty.querySelector('p').textContent = 'Failed to load drops: ' + (e.message || 'error');
+        }
+      }
+
