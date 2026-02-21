@@ -538,3 +538,48 @@
           empty.style.display = 'block';
         }
       }
+
+      async function loadCollection() {
+        const list = document.getElementById('collection-list');
+        const empty = document.getElementById('collection-empty');
+        list.innerHTML = '';
+        empty.style.display = 'none';
+        if (!contract || !signer) { empty.style.display = 'block'; empty.textContent = 'Connect wallet and attach contract.'; return; }
+        try {
+          const addr = await signer.getAddress();
+          const dropIds = await contract.getMintedDropIdsByWallet(addr);
+          const len = Array.isArray(dropIds) ? dropIds.length : (dropIds && dropIds.length !== undefined ? Number(dropIds.length) : 0);
+          if (len === 0) { empty.style.display = 'block'; return; }
+          const seen = new Set();
+          for (let i = 0; i < len; i++) {
+            const did = dropIds[i];
+            if (seen.has(String(did))) continue;
+            seen.add(String(did));
+            const count = await contract.getMintCountForWallet(did, addr);
+            const li = document.createElement('li');
+            li.innerHTML = '<span>Drop #' + did + '</span><span class="mono">Minted: ' + count + '</span>';
+            list.appendChild(li);
+          }
+        } catch (e) {
+          console.error(e);
+          empty.style.display = 'block';
+        }
+      }
+
+      async function loadDropDetail() {
+        const out = document.getElementById('drop-detail');
+        const dropId = document.getElementById('mint-drop-id').value.trim();
+        if (!contract || !dropId) { out.textContent = 'Enter drop ID and attach contract.'; return; }
+        try {
+          const cfg = await contract.getDropConfig(dropId);
+          const remaining = await contract.getRemainingSupply(dropId);
+          const phaseCount = await contract.getPhaseCountForDrop(dropId);
+          const activePhase = await contract.getActivePhaseForDrop(dropId);
+          out.textContent = 'Creator: ' + cfg[0] + '\nMinted: ' + cfg[4] + ' / ' + cfg[3] + '\nRemaining: ' + remaining + '\nPrice: ' + ethers.formatEther(cfg[5]) + ' ETH\nPhases: ' + phaseCount + '\nActive phase index: ' + (Number(activePhase) < 0 ? 'none' : activePhase) + '\nPaused: ' + cfg[9] + ' Finalized: ' + cfg[10];
+        } catch (e) {
+          out.textContent = 'Error: ' + (e.message || 'unknown');
+        }
+      }
+
+      async function doMint() {
+        hideMsg('mint-msg');
