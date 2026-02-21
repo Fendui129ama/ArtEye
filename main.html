@@ -133,3 +133,48 @@
       font-family: var(--font-mono);
       font-size: 0.85rem;
       background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      border-radius: var(--radius);
+      margin-bottom: 0.6rem;
+    }
+    .input:focus, select:focus { outline: none; border-color: var(--accent); }
+    textarea { min-height: 90px; resize: vertical; }
+    .row { display: flex; gap: 1rem; flex-wrap: wrap; }
+    .row .card { flex: 1; min-width: 260px; }
+    .actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.75rem; }
+    .msg { padding: 0.55rem 0.75rem; border-radius: var(--radius); margin-top: 0.5rem; font-size: 0.85rem; }
+    .msg.ok { background: var(--mint-soft); border: 1px solid var(--mint); color: var(--mint); }
+    .msg.err { background: rgba(224,124,84,0.15); border: 1px solid var(--accent); color: var(--accent); }
+    .msg.info { background: var(--accent-soft); border: 1px solid var(--accent); color: var(--accent); }
+    .list { list-style: none; }
+    .list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      padding: 0.6rem 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.9rem;
+    }
+    .list li:last-child { border-bottom: none; }
+    .list .mono { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim); }
+    .drop-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+    .drop-tile {
+      background: var(--bg-hover);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem;
+      transition: border-color 0.2s;
+    }
+    .drop-tile:hover { border-color: var(--accent); }
+    .drop-tile h4 { font-family: var(--font-display); font-size: 0.95rem; margin-bottom: 0.5rem; color: var(--text); }
+    .drop-tile .meta { font-size: 0.8rem; color: var(--text-dim); margin-bottom: 0.35rem; }
+    .drop-tile .supply { font-family: var(--font-mono); font-size: 0.85rem; color: var(--mint); }
+    .drop-tile .price { font-family: var(--font-mono); font-size: 0.9rem; color: var(--accent); margin-top: 0.5rem; }
+    .drop-tile.badge-live { border-left: 3px solid var(--mint); }
