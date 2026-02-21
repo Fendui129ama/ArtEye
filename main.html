@@ -403,3 +403,48 @@
         el.style.display = 'block';
       }
 
+      function hideMsg(containerId) {
+        const el = document.getElementById(containerId);
+        if (el) { el.style.display = 'none'; el.textContent = ''; }
+      }
+
+      async function connectWallet() {
+        try {
+          if (!window.ethereum) { showMsg('mint-msg', 'No Ethereum provider (e.g. MetaMask).', 'err'); return; }
+          provider = new ethers.BrowserProvider(window.ethereum);
+          const accounts = await provider.send('eth_requestAccounts', []);
+          if (accounts.length === 0) { showMsg('mint-msg', 'No account selected.', 'err'); return; }
+          signer = await provider.getSigner();
+          const addr = await signer.getAddress();
+          walletAddrEl.textContent = addr.slice(0, 6) + '…' + addr.slice(-4);
+          walletAddrEl.title = addr;
+          if (contractAddress) attachContract(contractAddress);
+          loadTabs();
+        } catch (e) {
+          console.error(e);
+          showMsg('mint-msg', e.message || 'Connect failed.', 'err');
+        }
+      }
+
+      function attachContract(addr) {
+        const a = (addr || contractInput.value || '').trim();
+        if (!ethers.isAddress(a)) {
+          showMsg('mint-msg', 'Invalid contract address.', 'err');
+          return;
+        }
+        contractAddress = a;
+        contractInput.value = a;
+        try {
+          contract = new ethers.Contract(a, ABI, signer || provider);
+          statsBar.style.display = 'flex';
+          loadStats();
+          loadTabs();
+        } catch (e) {
+          console.error(e);
+          showMsg('mint-msg', e.message || 'Attach failed.', 'err');
+        }
+      }
+
+      async function loadStats() {
+        if (!contract) return;
+        try {
