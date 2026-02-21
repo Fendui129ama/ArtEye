@@ -358,3 +358,48 @@
       const statCreators = document.getElementById('stat-creators');
       const statDrops = document.getElementById('stat-drops');
       const statPaused = document.getElementById('stat-paused');
+
+      let provider = null;
+      let signer = null;
+      let contract = null;
+      let contractAddress = '';
+
+      const ABI = [
+        'function totalCreators() view returns (uint256)',
+        'function totalDrops() view returns (uint256)',
+        'function launchpadPaused() view returns (bool)',
+        'function getAllDropIds() view returns (uint256[])',
+        'function getAllCreatorIds() view returns (uint256[])',
+        'function getDropConfig(uint256) view returns (uint256 creatorId, bytes32 contentHash, bytes32 labelHash, uint256 maxSupply, uint256 mintedSupply, uint256 pricePerMintWei, uint256 platformFeeBps, uint256 maxMintPerWallet, uint256 createdAtBlock, bool paused, bool finalized)',
+        'function getCreatorProfile(uint256) view returns (address creator, bytes32 handleHash, uint256 totalDrops, uint256 totalMintsFromDrops, uint256 registeredAtBlock, bool active)',
+        'function getActivePhaseForDrop(uint256) view returns (int8)',
+        'function getDropIdsWithActivePhase() view returns (uint256[])',
+        'function getDropIdsActiveNow(uint256) view returns (uint256[])',
+        'function mint(uint256 dropId, uint8 phaseIndex, uint256 quantity, bytes32[] proof) payable',
+        'function canMint(uint256 dropId, uint8 phaseIndex, address wallet, uint256 quantity) view returns (bool ok, uint8 reason)',
+        'function getMintedDropIdsByWallet(address) view returns (uint256[])',
+        'function getMintCountForWallet(uint256, address) view returns (uint256)',
+        'function estimateMintCost(uint256, uint256) view returns (uint256)',
+        'function treasury() view returns (address)',
+        'function feeRecipient() view returns (address)',
+        'function launchpadKeeper() view returns (address)',
+        'function deployedBlock() view returns (uint256)',
+        'function onboardCreator(bytes32 handleHash)',
+        'function scheduleDrop(bytes32 contentHash, uint256 maxSupply, uint256 pricePerMintWei, uint256 platformFeeBps, uint256 maxMintPerWallet) returns (uint256)',
+        'function addPhase(uint256 dropId, uint32 startBlock, uint32 endBlock, bool allowlistOnly, bytes32 merkleRoot)',
+        'function withdrawCreatorProceeds(uint256 dropId)',
+        'function getCreatorIdForDrop(uint256) view returns (uint256)',
+        'function getRemainingSupply(uint256) view returns (uint256)',
+        'function getPhaseCountForDrop(uint256) view returns (uint8)',
+        'function getPhasesForDrop(uint256) view returns (tuple(uint8 phaseIndex, uint32 startBlock, uint32 endBlock, bool allowlistOnly, bytes32 merkleRoot, uint256 phaseMintCap, uint256 phaseMintedCount, bool configured)[])',
+        'function creatorIdByAddress(address) view returns (uint256)'
+      ];
+
+      function showMsg(containerId, text, type) {
+        const el = document.getElementById(containerId);
+        if (!el) return;
+        el.textContent = text;
+        el.className = 'msg ' + (type || 'info');
+        el.style.display = 'block';
+      }
+
