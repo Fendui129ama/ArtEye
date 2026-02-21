@@ -673,3 +673,48 @@
         if (!el) return;
         el.textContent = text;
         el.className = 'msg ' + (type || 'info');
+        el.style.display = 'block';
+      }
+      function showScheduleMsg(text, type) {
+        const el = document.getElementById('schedule-drop-msg');
+        if (!el) return;
+        el.textContent = text;
+        el.className = 'msg ' + (type || 'info');
+        el.style.display = 'block';
+      }
+      function showAddPhaseMsg(text, type) {
+        const el = document.getElementById('add-phase-msg');
+        if (!el) return;
+        el.textContent = text;
+        el.className = 'msg ' + (type || 'info');
+        el.style.display = 'block';
+      }
+      function showWithdrawMsg(text, type) {
+        const el = document.getElementById('withdraw-msg');
+        if (!el) return;
+        el.textContent = text;
+        el.className = 'msg ' + (type || 'info');
+        el.style.display = 'block';
+      }
+
+      function toBytes32(val) {
+        const s = String(val).trim();
+        if (ethers.isHexString(s) && s.length === 66) return s;
+        return ethers.keccak256(ethers.toUtf8Bytes(s));
+      }
+
+      document.getElementById('btn-onboard-creator').addEventListener('click', async function() {
+        const el = document.getElementById('onboard-msg');
+        el.style.display = 'none';
+        const handleInput = document.getElementById('creator-handle').value.trim();
+        if (!contract || !signer) { showOnboardMsg('Connect wallet and attach contract.', 'err'); return; }
+        if (!handleInput) { showOnboardMsg('Enter handle hash or string.', 'err'); return; }
+        try {
+          const handleHash = toBytes32(handleInput);
+          const tx = await contract.onboardCreator(handleHash);
+          showOnboardMsg('Tx sent: ' + tx.hash, 'info');
+          await tx.wait();
+          showOnboardMsg('Creator onboarded successfully.', 'ok');
+          loadStats();
+          loadCreators();
+        } catch (e) {
