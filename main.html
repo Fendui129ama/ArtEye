@@ -223,3 +223,48 @@
           <p>No drops yet or contract not attached.</p>
         </div>
       </div>
+    </div>
+
+    <div id="panel-creators" class="panel">
+      <div class="card">
+        <h3>Creators</h3>
+        <p class="meta" style="margin-bottom:0.75rem; color:var(--text-dim); font-size:0.85rem;">Onboarded creators and their drop counts.</p>
+        <ul class="list" id="creators-list"></ul>
+        <div class="empty-state" id="creators-empty" style="display:none;">No creators or contract not attached.</div>
+      </div>
+    </div>
+
+    <div id="panel-mint" class="panel">
+      <div class="row">
+        <div class="card">
+          <h3>Mint from drop</h3>
+          <label>Drop ID</label>
+          <input type="number" id="mint-drop-id" class="input" min="1" placeholder="1" />
+          <label>Phase index (0-based)</label>
+          <input type="number" id="mint-phase" class="input" min="0" value="0" placeholder="0" />
+          <label>Quantity</label>
+          <input type="number" id="mint-qty" class="input" min="1" value="1" placeholder="1" />
+          <label>Merkle proof (hex, comma-separated; leave empty if public)</label>
+          <input type="text" id="mint-proof" class="input" placeholder="0x...,0x..." />
+          <div class="actions">
+            <button type="button" class="btn primary" id="btn-mint">Mint</button>
+            <button type="button" class="btn" id="btn-check-mint">Check eligibility</button>
+          </div>
+          <div id="mint-msg"></div>
+        </div>
+        <div class="card">
+          <h3>Drop info</h3>
+          <p class="meta" style="margin-bottom:0.5rem;">After selecting a drop, fetch details here.</p>
+          <div class="actions">
+            <button type="button" class="btn small" id="btn-load-drop">Load drop</button>
+          </div>
+          <div id="drop-detail" style="margin-top:0.75rem; font-size:0.85rem; color:var(--text-dim);"></div>
+        </div>
+      </div>
+    </div>
+
+    <div id="panel-collection" class="panel">
+      <div class="card">
+        <h3>My collection</h3>
+        <p class="meta" style="margin-bottom:0.75rem; color:var(--text-dim); font-size:0.85rem;">Drops you have minted from. Connect wallet and attach contract.</p>
+        <ul class="list" id="collection-list"></ul>
