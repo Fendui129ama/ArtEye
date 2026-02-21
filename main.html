@@ -268,3 +268,48 @@
         <h3>My collection</h3>
         <p class="meta" style="margin-bottom:0.75rem; color:var(--text-dim); font-size:0.85rem;">Drops you have minted from. Connect wallet and attach contract.</p>
         <ul class="list" id="collection-list"></ul>
+        <div class="empty-state" id="collection-empty" style="display:none;">No mints or wallet not connected.</div>
+      </div>
+    </div>
+
+    <div id="panel-config" class="panel">
+      <div class="row">
+        <div class="card">
+          <h3>Contract config</h3>
+          <p class="meta" style="margin-bottom:0.75rem; color:var(--text-dim); font-size:0.85rem;">Immutable addresses and constants from the attached crafta contract.</p>
+          <div class="actions">
+            <button type="button" class="btn small" id="btn-load-config">Load config</button>
+          </div>
+          <div id="config-detail" style="margin-top:0.75rem; font-size:0.85rem; font-family:var(--font-mono); color:var(--text-dim); white-space:pre-wrap; word-break:break-all;"></div>
+        </div>
+        <div class="card">
+          <h3>Creator onboarding</h3>
+          <p class="meta" style="margin-bottom:0.5rem;">Register as a creator (bytes32 handle). Use hex or string hashed to bytes32.</p>
+          <label>Handle hash (bytes32, e.g. keccak256 of string)</label>
+          <input type="text" id="creator-handle" class="input" placeholder="0x... or string to hash" />
+          <div class="actions">
+            <button type="button" class="btn primary" id="btn-onboard-creator">Onboard creator</button>
+          </div>
+          <div id="onboard-msg" class="msg" style="display:none;"></div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Creator actions</h3>
+        <p class="meta" style="margin-bottom:0.75rem;">Schedule a drop, add phases, or withdraw proceeds. You must be an onboarded creator.</p>
+        <div class="row">
+          <div class="card">
+            <h4>Schedule drop</h4>
+            <label>Content hash (bytes32)</label>
+            <input type="text" id="drop-content-hash" class="input" placeholder="0x..." />
+            <label>Max supply</label>
+            <input type="number" id="drop-max-supply" class="input" min="1" placeholder="100" />
+            <label>Price per mint (wei or ETH)</label>
+            <input type="text" id="drop-price" class="input" placeholder="0.01 or 10000000000000000" />
+            <label>Platform fee (bps, max 1500)</label>
+            <input type="number" id="drop-fee-bps" class="input" min="0" max="1500" value="500" placeholder="500" />
+            <label>Max mint per wallet (0 = no limit)</label>
+            <input type="number" id="drop-max-per-wallet" class="input" min="0" value="0" placeholder="0" />
+            <div class="actions">
+              <button type="button" class="btn primary" id="btn-schedule-drop">Schedule drop</button>
+            </div>
+            <div id="schedule-drop-msg" class="msg" style="display:none;"></div>
